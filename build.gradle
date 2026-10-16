@@ -1,0 +1,66 @@
+plugins {
+    id 'net.fabricmc.fabric-loom' version "@@{loom_version}"
+}
+
+version = project.mod_version
+group = project.maven_group
+base { archivesName = project.archives_base_name }
+
+repositories { }
+
+dependencies {
+    minecraft "com.mojang:minecraft:§{project.minecraft_version}"
+    implementation "net.fabricmc:fabric-loader:§{project.loader_version}"
+    implementation "net.fabricmc.fabric-api:fabric-api:§{project.fabric_api_version}"
+}
+
+loom {
+    splitEnvironmentSourceSets()
+    mods {
+        "sift" { sourceSet sourceSets.main; sourceSet sourceSets.client }
+    }
+}
+
+def vfxOutput = layout.buildDirectory.dir("generated/videoVfx")
+def geometryOutput = layout.buildDirectory.dir("generated/sourceGeometry")
+sourceSets.main.resources.srcDir(vfxOutput)
+sourceSets.main.resources.srcDir(geometryOutput)
+
+tasks.register("importVideoVfxAssets", Copy) {
+    from zipTree(layout.projectDirectory.file("mod_video_assets.zip"))
+    into vfxOutput
+}
+
+tasks.register("importGeometrySource") {
+    inputs.file(layout.projectDirectory.file("rift.zip"))
+    outputs.dir(geometryOutput)
+    doLast {
+        def archive = new java.util.zip.ZipFile(file("rift.zip"))
+        def mapping = [
+            "rift/rift_portal.geo.json": "assets/sift/bedrock_source/rift_portal.geo.json",
+            "rift/rift_portal.animation.json": "assets/sift/bedrock_source/rift_portal.animation.json",
+            "rift/rift_portal.animation_controllers.json": "assets/sift/bedrock_source/rift_portal.animation_controllers.json",
+            "rift/rift_portal.entity.json": "assets/sift/bedrock_source/rift_portal.entity.json",
+            "rift/rift_portal.json": "assets/sift/bedrock_source/rift_portal.json",
+            "rift/rift_portal.png": "assets/sift/textures/entity/rift_portal.png"
+        ]
+        try {
+            mapping.each { sourceName, targetName ->
+                def entry = archive.getEntry(sourceName)
+                if (entry == null) throw new GradleException("Missing source geometry entry: " + sourceName)
+                def target = new File(geometryOutput.get().asFile, targetName)
+                target.parentFile.mkdirs()
+                archive.getInputStream(entry).withCloseable { input -> target.bytes = input.bytes }
+            }
+        } finally { archive.close() }
+    }
+}
+
+processResources {
+    dependsOn tasks.named("importVideoVfxAssets"), tasks.named("importGeometrySource")
+    inputs.property "version", project.version
+    filesMatching("fabric.mod.json") { expand "version": project.version }
+}
+
+tasks.withType(JavaCompile).configureEach { options.release = 25 }
+java { toolchain.languageVersion = JavaLanguageVersion.of(25); withSourcesJar() }
