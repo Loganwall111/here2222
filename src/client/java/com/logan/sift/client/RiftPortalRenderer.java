@@ -75,7 +75,7 @@ public final class RiftPortalRenderer implements BlockEntityRenderer<RiftPortalB
         matrices.mulPose(Axis.YP.rotationDegrees(yaw));
         matrices.scale(size * 0.10F, -size * 0.10F, size * 0.10F);
         queue.submitModelPart(part, matrices, RenderTypes.entityTranslucent(texture),
-            FULL_BRIGHT, OverlayTexture.NO_OVERLAY, null, false, false, -1, null, 0);
+            FULL_BRIGHT, OverlayTexture.NO_OVERLAY, null, -1, null, 0);
         matrices.popPose();
     }
 }
