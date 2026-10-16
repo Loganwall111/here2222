@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "id": "sift",
+  "version": "${version}",
+  "name": "Sift Anomaly",
+  "description": "A placeable animated Sift Rift Portal using extracted source geometry and VFX frames.",
+  "authors": ["Loganwall111"],
+  "license": "All-Rights-Reserved",
+  "environment": "*",
+  "entrypoints": {
+    "main": ["com.logan.sift.SiftAnomalyMod"],
+    "client": ["com.logan.sift.client.SiftAnomalyClient"]
+  },
+  "depends": {
+    "fabricloader": ">=0.19.5",
+    "minecraft": "~26.2",
+    "java": ">=25",
+    "fabric-api": "*"
+  }
+}
