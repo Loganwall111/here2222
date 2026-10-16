@@ -59,7 +59,7 @@ tasks.register("importGeometrySource") {
     }
 }
 
-tasks.named("sourcesJar") {
+tasks.matching { it.name == "sourcesJar" }.configureEach {
     dependsOn tasks.named("importVideoVfxAssets"), tasks.named("importGeometrySource")
 }
 
