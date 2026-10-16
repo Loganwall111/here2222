@@ -1,5 +1,5 @@
 plugins {
-    id 'net.fabricmc.fabric-loom' version "§{loom_version}"
+    id 'net.fabricmc.fabric-loom' version "${loom_version}"
 }
 
 version = project.mod_version
@@ -9,9 +9,9 @@ base { archivesName = project.archives_base_name }
 repositories { }
 
 dependencies {
-    minecraft "com.mojang:minecraft:§{project.minecraft_version}"
-    implementation "net.fabricmc:fabric-loader:§{project.loader_version}"
-    implementation "net.fabricmc.fabric-api:fabric-api:§{project.fabric_api_version}"
+    minecraft "com.mojang:minecraft:${project.minecraft_version}"
+    implementation "net.fabricmc:fabric-loader:${project.loader_version}"
+    implementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
 }
 
 loom {
@@ -47,7 +47,7 @@ tasks.register("importGeometrySource") {
         try {
             mapping.each { sourceName, targetName ->
                 def entry = archive.getEntry(sourceName)
-                if (entry == null) throw new GradleException("Missing source geometry entry: §{sourceName}")
+                if (entry == null) throw new GradleException("Missing source geometry entry: ${sourceName}")
                 def target = new File(geometryOutput.get().asFile, targetName)
                 target.parentFile.mkdirs()
                 archive.getInputStream(entry).withCloseable { input -> target.bytes = input.bytes }
