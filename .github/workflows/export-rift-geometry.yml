@@ -1,0 +1,42 @@
+name: Export Rift Geometry
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'rift.zip'
+      - '.github/workflows/export-rift-geometry.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  export:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Extract original geometry and animation files
+        run: |
+          mkdir -p exported-rift
+          python - <<'PY'
+          import zipfile, pathlib, shutil
+          archive = zipfile.ZipFile("rift.zip")
+          wanted = (
+              "rift/rift_portal.geo.json",
+              "rift/rift_portal.entity.json",
+              "rift/rift_portal.animation.json",
+              "rift/rift_portal.animation_controllers.json",
+              "rift/rift_portal.json",
+              "rift/rift_portal.png",
+          )
+          for name in wanted:
+              dest = pathlib.Path("exported-rift") / pathlib.Path(name).name
+              dest.write_bytes(archive.read(name))
+          PY
+          cat > exported-rift/README.txt <<'EOF'
+          Files in this export were extracted unchanged from the repository's rift.zip.
+          EOF
+      - uses: actions/upload-artifact@v4
+        with:
+          name: original-rift-geometry
+          path: exported-rift/
+          if-no-files-found: error
+          retention-days: 7
