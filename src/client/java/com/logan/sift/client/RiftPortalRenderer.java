@@ -51,7 +51,7 @@ public final class RiftPortalRenderer implements BlockEntityRenderer<RiftPortalB
         matrices.translate(0.5D, 3.875D, 0.5D);
         matrices.scale(-1.0F / 16.0F, -1.0F / 16.0F, 1.0F / 16.0F);
         queue.submitModelPart(model.portal, matrices, RenderTypes.entityTranslucent(PORTAL_TEXTURE),
-            FULL_BRIGHT, OverlayTexture.NO_OVERLAY, null, false, false, -1, null, 0);
+            FULL_BRIGHT, OverlayTexture.NO_OVERLAY, null, -1, null, 0);
         matrices.popPose();
 
         int t = state.ageTicks % 1_000_000;
