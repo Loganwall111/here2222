@@ -2,6 +2,9 @@ name: Export Rift Geometry
 on:
   push:
     branches: [main]
+    paths:
+      - 'rift.zip'
+      - '.github/workflows/export-rift-geometry.yml'
   workflow_dispatch:
 permissions:
   contents: read
