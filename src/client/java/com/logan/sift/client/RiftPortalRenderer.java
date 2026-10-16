@@ -32,6 +32,9 @@ public final class RiftPortalRenderer implements BlockEntityRenderer<RiftPortalB
     private final net.minecraft.client.model.geom.ModelPart emergenceB = RiftPortalModel.createEffectLayer().bakeRoot().getChild("effect");
 
     public RiftPortalRenderer(BlockEntityRendererProvider.Context context) {}
+    @Override public boolean shouldRenderOffScreen() { return true; }
+    @Override public int getViewDistance() { return 128; }
+
 
     @Override public RiftPortalRenderState createRenderState() { return new RiftPortalRenderState(); }
 
