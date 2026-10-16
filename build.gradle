@@ -47,6 +47,7 @@ tasks.register("importGeometrySource") {
         try {
             mapping.each { sourceName, targetName ->
                 def entry = archive.getEntry(sourceName)
+                if (entry == null) entry = archive.getEntry(sourceName.substring(sourceName.lastIndexOf('/') + 1))
                 if (entry == null) throw new GradleException("Missing source geometry entry: ${sourceName}")
                 def target = new File(geometryOutput.get().asFile, targetName)
                 target.parentFile.mkdirs()
@@ -56,6 +57,10 @@ tasks.register("importGeometrySource") {
             archive.close()
         }
     }
+}
+
+tasks.named("sourcesJar") {
+    dependsOn tasks.named("importVideoVfxAssets"), tasks.named("importGeometrySource")
 }
 
 processResources {
