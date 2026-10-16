@@ -2,9 +2,6 @@ name: Export Rift Geometry
 on:
   push:
     branches: [main]
-    paths:
-      - 'rift.zip'
-      - '.github/workflows/export-rift-geometry.yml'
   workflow_dispatch:
 permissions:
   contents: read
@@ -17,7 +14,7 @@ jobs:
         run: |
           mkdir -p exported-rift
           python - <<'PY'
-          import zipfile, pathlib, shutil
+          import zipfile, pathlib
           archive = zipfile.ZipFile("rift.zip")
           wanted = (
               "rift/rift_portal.geo.json",
